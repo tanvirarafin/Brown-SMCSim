@@ -1,1 +1,1 @@
-/home/erfan/projects/SMCSim/SMC/SW//PIM//resident/definitions.h
+/home/mdtanvirarafin/Brown-SMCSim/SMC/SW//PIM//resident/definitions.h

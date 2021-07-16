@@ -8,7 +8,7 @@ GEM5_STATISTICS=(
 "power_related_to_pim"
 )
 
-VALUES0=( sgraph_page_rank ) # sgraph_bellman_ford sgraph_bfs sgraph_teenage_follower   
+VALUES0=( sgraph_teenage_follower ) # sgraph_bellman_ford sgraph_bfs sgraph_teenage_follower
 VALUES1=( best )
 VALUES2=( 1000 ) # 8000 16000 32000 64000 ) # Graph Size
 

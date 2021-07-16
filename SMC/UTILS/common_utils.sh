@@ -492,6 +492,15 @@ function update_scenario_location()
 	export STATISTICS_FILE_NAME="stats_${__SCENARIO}"
 	export M5_OUT=m5out
 	export M5_OUTDIR=$SCENARIO_CASE_DIR/$M5_OUT
+
+	if (($ARAFIN_DEBUG))
+	then
+	  echo "SCENARIO_FORMAT      =" ${__SCENARIO}
+	  echo "SCENARIO_HOME_DIR    =" $SCENARIOS_DIR/$SCENARIO_FORMAT
+	  echo "SCENARIO_CASE_DIR    =" $SCENARIO_HOME_DIR/$__CASE/
+	  echo "STATISTICS_FILE_NAME = stats_${__SCENARIO}"
+	  echo "M5_OUTDIR            = $SCENARIO_CASE_DIR/$M5_OUT"
+	fi
 }
 
 #######################################################################################
@@ -804,6 +813,9 @@ function copy_to_extra_image()
 # $1 ... $8 files to copy to the main image
 function copy_to_main_image()
 {
+	echo "***************************************************"
+	echo "The image information"
+	echo  $GEM5_DISKIMAGE $1 $2 $3 $4 $5 $6 $7 $8
 	copy_to_disk_image $GEM5_DISKIMAGE $1 $2 $3 $4 $5 $6 $7 $8
 }
 
