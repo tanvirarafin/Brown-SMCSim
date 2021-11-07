@@ -12,24 +12,20 @@ GEM5_STATISTICS=(
 "power_related_to_pim"
 )
 
-LINKED_LIST_KERNEL_NAME=dummy_kernel #dummy kernel is used for host-only application
+KERNEL_NAME=array_walk #dummy kernel is used for host-only application
 
-LINKED_LIST_TYPE=default
-HOST_APP_DIR=arafin_array_offload_multithread
+TYPE=default
+HOST_APP_DIR=arafin_array_offload_pim_multithread
 
-# APP_TYPE: HOST_FC_SORT, HOST_LAZY_LOCK
-export APP_TYPE=HOST_LAZY_LOCK
+export APP_TYPE="default"
 export PIM_BUILD="FALSE"
-export USE_HOST_THREADS="TRUE"  # set as TRUE for fc_without_sort or fc_with_sort linked lists
+export USE_HOST_THREADS="TRUE"
 export NUM_HOST_THREADS=8      # DON'T CHANGE THIS FIELD!! host app takes measurements for 2,4,6,8 threads all at once
-export KEY_UPPER_BOUND=100000
-export INITIAL_LIST_SIZE=1
-export MAX_LEVEL=16
-export TOTAL_NUM_OPS=4200
-export READ_ONLY_PERCENTAGE=90
 export DEBUG_ON="FALSE"
-export REQUIRED_MEM_SIZE=8388608 # 8MB (this field has no meaning anymore. originally used for PIM mainmem only, but PIM has new implementation now.)
-
+export OFFLOADED_ARRAY_SIZE=4096			# Array Size
+export OFFLOADED_NUM_TURNS=1				# Number of operations to perform
+export OFFLOADED_WALK_STEP=64				# Number of operations to perform
+export INITIALIZE_ARRAY=FALSE
 
 source UTILS/default_params.sh
 create_scenario "$0/$*" "$HOST_APP_DIR-initialsize$INITIAL_LIST_SIZE-$TOTAL_NUM_OPS-$READ_ONLY_PERCENTAGE" "ARMv7 + HMC2011 + Linux (VExpress_EMM) + PIM(ARMv7)"
@@ -41,8 +37,8 @@ load_model system/gem5_pim.sh
 load_model gem5_perf_sim.sh				# Fast simulation without debugging
 
 export DRAM_row_size=16  # JIWON: to keep memory size consistent with new PIM architecture
-export OFFLOADED_KERNEL_NAME=$LINKED_LIST_KERNEL_NAME    # Kernel name to offload (Look in SMC/SW/PIM/kernels)
-export OFFLOADED_KERNEL_SUBNAME=$LINKED_LIST_TYPE
+export OFFLOADED_KERNEL_NAME=$KERNEL_NAME    # Kernel name to offload (Look in SMC/SW/PIM/kernels)
+export KERNEL_SUBNAME=$TYPE
 #####################
 #####################
 load_model common_params.sh
@@ -59,7 +55,6 @@ print_msg "Build and copy the required files to the extra image ..."
 #*******
 clonedir $PIM_SW_DIR/resident
 cp $HOST_SW_DIR/app/$HOST_APP_DIR/defs.hh .
-#cp $HOST_SW_DIR/app/app_utils.hh .  #added by jiwon
 run ./build.sh  7   # Build the main resident code
 run ./build.sh 7 "${OFFLOADED_KERNEL_NAME}" # Build a specific kernel code (name without suffix)
 returntopwd

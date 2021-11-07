@@ -21,7 +21,7 @@ do
 
 	#####################
 	#####################
-    export OFFLOADED_KERNEL_NAME=array_walk		# Kernel name to offload (Look in SMC/SW/PIM/kernels)
+  export OFFLOADED_KERNEL_NAME=array_walk		# Kernel name to offload (Look in SMC/SW/PIM/kernels)
 	export OFFLOADED_ARRAY_SIZE=4096			# Array Size
 	export OFFLOADED_NUM_TURNS=1				# Number of operations to perform
 	export OFFLOADED_WALK_STEP=64				# Number of operations to perform

@@ -1,5 +1,5 @@
 #include "kernel_params.h"
-
+#include "defs.hh"
 /******************************************************************************/
 #ifdef kernel_default
 

@@ -8,8 +8,7 @@
 #include <time.h>
 #include <stdint.h> // UINT32_MAX
 #include "app_utils.hh"     // This must be included before anything else
-#include "utils.hh"
-#include <unordered_map>
+//#include <unordered_map>
 
 using namespace std;
 
@@ -24,8 +23,36 @@ void* routine(void* routine_args){
     int threadID = ((thread_data_t*) routine_args)->thread_id;
     int *array = ((thread_data_t*) routine_args)->array;
     int sum = array[0] + array[1];
-    cout<< "Currently at " << threadID << " and the sum is " << sum <<endl;
+    cout<< "Currently at " << threadID << " :w"
+                                          "and the sum is " << sum <<endl;
     return NULL;
+}
+#define TYPE ulong_t
+
+TYPE* A;
+
+void create_array()
+{
+    A = (TYPE*)allocate_region(ARRAY_SIZE*sizeof(TYPE));
+#ifdef INITIALIZE_ARRAY
+    cout << "Initializing array[i] to ..." << endl;
+    for ( unsigned i=0; i< ARRAY_SIZE; i++)
+        A[i] = i;
+#else
+    cout << "array is uninitialized!" << endl;
+#endif
+}
+
+ulong_t golden()
+{
+    ulong_t checksum = 0;
+    for ( unsigned j=0; j< NUM_TURNS; j++ )
+        for ( unsigned i=0; i<ARRAY_SIZE; i+=WALK_STEP )
+        {
+            checksum += A[i];
+            // cout << "INDEX=" << i << endl;;
+        }
+    return checksum;
 }
 
 // Main
@@ -42,6 +69,7 @@ int main(int argc, char *argv[])
     cout << "(main.cpp): Kernel Name: " << FILE_NAME << endl;
     cout << "(main.cpp): Offloading the computation kernel ... " << endl;
     pim->offload_kernel((char*)FILE_NAME);
+    create_array();
     static int arr[8][2] = {
             {1, 2},
             {3, 4},
@@ -56,6 +84,7 @@ int main(int argc, char *argv[])
     for (auto x = 1; x <= 4; x++) {
         int num_threads = 2*x;
         start_threads = 0;
+
         for (auto i = 0; i < num_threads; i++) {
             thread_data[i].array = arr[i];
             thread_data[i].thread_id = i;
@@ -79,7 +108,9 @@ int main(int argc, char *argv[])
         ____TIME_STAMP((2*x));
         cout << "(main.cc): Done with " << num_threads << " threads!" << endl;
     }
+
     APP_INFO("[---DONE---]");
+
     cout << "Exiting gem5 ..." << endl;
     pim->give_m5_command(PIMAPI::M5_EXIT);
     return 0;
